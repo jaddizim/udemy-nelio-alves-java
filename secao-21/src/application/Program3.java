@@ -12,16 +12,13 @@ public class Program3 {
 
     public static void main(String[] args) {
 
-        PreparedStatement preparedStatement = null;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        try (Connection conn = DB.getConnection()) {
-
-            preparedStatement = conn.prepareStatement("INSERT INTO seller "
-                            + "(Name, Email, BirthDate, BaseSalary, DepartmentId)"
-                            + "VALUES "
-                            + "( ?, ?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
+        try (Connection conn = DB.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO seller "
+                             + "(Name, Email, BirthDate, BaseSalary, DepartmentId)"
+                             + "VALUES ( ?, ?, ?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, "Carl Purple");
             preparedStatement.setString(2, "carl@gmail.com");
@@ -32,20 +29,17 @@ public class Program3 {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    System.out.println("Done! Id = " + id);
+                try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                    while (resultSet.next()) {
+                        int id = resultSet.getInt(1);
+                        System.out.println("Done! Id = " + id);
+                    }
                 }
             } else {
                 System.out.println("No rows affected!");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            DB.closeStatement(preparedStatement);
-            DB.closeConnection();
         }
     }
 }
