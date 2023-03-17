@@ -1,25 +1,26 @@
 package model.entities;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Department implements Serializable {
 
-    private int id;
+    private Integer id;
     private String name;
 
     public Department() {
     }
 
-    public Department(int id, String name) {
+    public Department(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -36,7 +37,7 @@ public class Department implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
-        return id == that.id;
+        return Objects.equals(id, that.id);
     }
 
     @Override
